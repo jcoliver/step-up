@@ -3,9 +3,11 @@ title: "Cancer data visualization and analysis"
 author: "Jeff Oliver"
 date: "`r format(Sys.time(), '%d %B, %Y')`"
 output:
-  html_document: default
+  html_document: 
+    fig_height: 4
   pdf_document:
     latex_engine: xelatex
+    fig_height: 4
 ---
 
 A two-hour workshop for participants in STEP-UP summer program on cancer prevention and control. There are 16 students, mostly upper-division undergraduates.
@@ -23,10 +25,22 @@ A two-hour workshop for participants in STEP-UP summer program on cancer prevent
 ***
 
 ## Getting started
+
 + Start RStudio
 + Make `data` and `output` directories
 + Download data (come from [https://statecancerprofiles.cancer.gov/](https://statecancerprofiles.cancer.gov/))
+    + These data are lung cancer data incidence rates for each state, along with some demographic data
+
+```{r data-retrieve, eval = FALSE}
+download.file(url = "tinyurl.com/cancer-data-csv", destfile = "data/cancer-data.csv")
+```
 + Look at data
+
+```{r data-inspection}
+cancer.data <- read.csv(file = "data/cancer-data.csv")
+head(cancer.data)
+summary(cancer.data)
+```
 + Describe the data
 
 ***
@@ -37,11 +51,31 @@ A two-hour workshop for participants in STEP-UP summer program on cancer prevent
 ***
 
 ## Comparing groups
-+ New script (reproducibility)
-+ Read in data
-+ Compare rates in males vs. females
-+ Plot data?
-+ Run t-test
+### New script (reproducibility)
+
+```{r t-test-script}
+# Compare cancer incidence between sexes
+# Jeff Oliver
+# jcoliver@email.arizona.edu
+# 2019-06-05
+```
+
+### Read in data & visualize male v. female incidence
+```{r compare-male-female}
+cancer.data <- read.csv(file = "data/cancer-data.csv")
+boxplot(cancer.data$female.lung, cancer.data$male.lung)
+```
+
+But the x-axis doesn't tell us what "1" and "2" correspond to.
+
+```{r boxplot-axis-names}
+boxplot(list(female = cancer.data$female.lung, male = cancer.data$male.lung))
+```
+
+### Run t-test
+```{r sexes-t-test}
+t.test(x = cancer.data$female.lung, y = cancer.data$male.lung)
+```
 
 ***
 
@@ -51,12 +85,76 @@ A two-hour workshop for participants in STEP-UP summer program on cancer prevent
 ***
 
 ## Testing relationships
-+ New script
-+ Read in data
-+ Describe hypothesis
-+ Plot data
-+ Run linear regression
-+ Show shark attacks vs. ice cream sales.
+### New script
+```{r regression-script}
+# Compare cancer incidence between sexes
+# Jeff Oliver
+# jcoliver@email.arizona.edu
+# 2019-06-05
+```
+
+### Plot data & describe hypothesis
+```{r plot-two-variables}
+cancer.data <- read.csv(file = "data/cancer-data.csv")
+plot(x = cancer.data$income, y = cancer.data$male.lung)
+```
+
+Clean up the axis labels
+```{r clean-plot}
+plot(x = cancer.data$income, 
+     y = cancer.data$male.lung,
+     xlab = "Income (US $)",
+     ylab = "Lung cancer incidence (males)")
+```
+
+### Test relationship
+```{r linear-regression}
+income.lm <- lm(cancer.data$male.lung ~ cancer.data$income)
+summary(income.lm)
+```
+
+### Update plot
+```{r update-regression-plot}
+plot(x = cancer.data$income, 
+     y = cancer.data$male.lung,
+     xlab = "Income (US $)",
+     ylab = "Lung cancer incidence (males)")
+abline(income.lm)
+```
+
+### Correlation vs. Causation
+Discuss:
+
+```{r sharks, echo = FALSE}
+ice.cream <- 1:12 + rnorm(n = 12, mean = 2)
+shark.attacks <- round(5 * (1:12 + rnorm(n = 12, mean = 2)), digits = 0)
+plot(x = ice.cream,
+     y = shark.attacks,
+     xlab = "Ice Cream Sales ($1,000)",
+     ylab = "Shark Attacks")
+abline(lm(shark.attacks ~ ice.cream))
+```
+
+### Some additional plotting options
+```{r plot-both-sexes}
+plot(x = cancer.data$income, 
+     y = cancer.data$male.lung,
+     xlab = "Income (US $)",
+     ylab = "Lung cancer incidence",
+     pch = 19,
+     col = "orange")
+points(x = cancer.data$income,
+       y = cancer.data$female.lung,
+       pch = 19,
+       col = "forestgreen")
+abline(income.lm, col = "orange", lty = 2)
+abline(lm(female.lung ~ income, data = cancer.data), col = "forestgreen", lty = 2)
+legend("topright",
+       legend = c("Females", "Males"),
+       col = c("forestgreen", "orange"),
+       pch = 19,
+       lty = 2)
+```
 
 ***
 
@@ -64,10 +162,8 @@ A two-hour workshop for participants in STEP-UP summer program on cancer prevent
 
 + [resource one](url-one)
 + [resource two](url-two)
-+ A [PDF version](https://jcoliver.github.io/learn-r/lesson-name.pdf) of this lesson
++ A [PDF version](https://jcoliver.github.io/learn-r/step-up-lesson.pdf) of this lesson
 
 ***
 
-<a href="index.html">Back to learn-r main page</a>
-  
 Questions?  e-mail me at <a href="mailto:jcoliver@email.arizona.edu">jcoliver@email.arizona.edu</a>.
