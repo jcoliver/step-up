@@ -1,0 +1,73 @@
+---
+title: "Cancer data visualization and analysis"
+author: "Jeff Oliver"
+date: "`r format(Sys.time(), '%d %B, %Y')`"
+output:
+  html_document: default
+  pdf_document:
+    latex_engine: xelatex
+---
+
+A two-hour workshop for participants in STEP-UP summer program on cancer prevention and control. There are 16 students, mostly upper-division undergraduates.
+
+#### Learning objectives
+1. Examine data to ensure quality
+2. Develop hypotheses to explain trends
+3. Visualize comparisons between two groups
+4. Visualize relationships between two variables
+5. Test relationships between variables
+6. Understand the difference between correlation and causation
+
+## [DESCRIPTION OR MOTIVATION; 2-4 sentences that would be used for an announcement]
+
+***
+
+## Getting started
++ Start RStudio
++ Make `data` and `output` directories
++ Download data (come from [https://statecancerprofiles.cancer.gov/](https://statecancerprofiles.cancer.gov/))
++ Look at data
++ Describe the data
+
+***
+
+## Exercise
++ Get in groups; take five minutes to come up with a hypothesis you can test with these data
+
+***
+
+## Comparing groups
++ New script (reproducibility)
++ Read in data
++ Compare rates in males vs. females
++ Plot data?
++ Run t-test
+
+***
+
+## Exercise
++ Get in groups; take five minutes to draw how you might show relationship between variables; ideally comes from one of the hypotheses students generated
+
+***
+
+## Testing relationships
++ New script
++ Read in data
++ Describe hypothesis
++ Plot data
++ Run linear regression
++ Show shark attacks vs. ice cream sales.
+
+***
+
+## Additional resources
+
++ [resource one](url-one)
++ [resource two](url-two)
++ A [PDF version](https://jcoliver.github.io/learn-r/lesson-name.pdf) of this lesson
+
+***
+
+<a href="index.html">Back to learn-r main page</a>
+  
+Questions?  e-mail me at <a href="mailto:jcoliver@email.arizona.edu">jcoliver@email.arizona.edu</a>.
