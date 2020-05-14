@@ -1,0 +1,9 @@
+column,name,description
+state,State,State name
+male.lung,Incidence of lung cancer in males,"Number of cases per 100,000 males per year"
+female.lung,Incidence of lung cancer in females,"Number of cases per 100,000 females per year"
+income,Income,Median household income in U.S. dollars
+poverty,Poverty,Percent of families below poverty threshold
+uninsured,Uninsured,Percent of people 18-64 without health insurance
+unemployed,Unemployed,Percent of civilians over 16 years old without a job
+lang.isolation,Language isolation,Percent of households where all members have at least some difficulty with English
