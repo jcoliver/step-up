@@ -12,9 +12,10 @@ output:
 
 A two-hour workshop for participants in STEP-UP summer program on cancer prevention and control. There are 16 students, mostly upper-division undergraduates.
 
-## Updates:
+## Tasks:
 
-**Add tinyurl for data dictionary**
++ **Add tinyurl for data dictionary**
++ **Add script header right before reading in cancer data**
 
 ### General flow to lesson:
 
@@ -31,10 +32,6 @@ A two-hour workshop for participants in STEP-UP summer program on cancer prevent
 + Do _another_ regression example, using earlier code.
 + Assign groups to test another hypothesis in breakout rooms
 + Show ice cream & sharks graph
-
-### Oddjobs
-
-+ Create a data dictionary, maybe even another csv file that can be displayed on the screen
 
 #### Learning objectives
 
@@ -89,6 +86,11 @@ download.file(url = "tinyurl.com/data-dictionary-csv", destfile = "data/data-dic
 
 Open this file in your spreadsheet program and see what the columns represent.
 
+```{r display-dictionary, echo = FALSE}
+data_dictionary <- read.csv(file = "data/data-dictionary.csv")
+knitr::kable(x = data_dictionary)
+```
+
 Now, back in R, we can start working with the data. We need to load the data into R so we can do our analyses.
 
 ```{r data-loading}
@@ -111,10 +113,62 @@ summary(cancer_data)
 
 But what can we actually do with these data? Well, a lot, really. It really depends on the question you are interested in asking. So one thing we might be interested in is how language isolation affects the rates of lung cancer. That is, do states with a higher percentage of households that have difficulty with the English language have higher rates of lung cancer? This might happen because public health efforts may only be offered in English, and thus not reach all groups in need.
 
+### Visualizing data
+
+What would the data look like if this was the case? That is, if we had a plot of language isolation and rates of lung cancer, what would it look like if increased language isolation leads to increased rates of lung cancer? Take a few minutes to draw a plot by hand to show what this looks like.
+
+We can wait.
+
+So let us now look at the actual data. For this first plot, we will look at the incidence of lung cancer in females alone. We can use the `plot` command to show the data, instructing R to use the `lang.isolation` column for the x-axis and the `female.lung` column for the y-axis.
+
+```{r plot-1}
+plot(x = cancer_data$lang.isolation, y = cancer_data$female.lung)
+```
+
+Let us take a moment to make our axis labels a little prettier by re-running the plot code with the names we want to use for the x- and y-axes.
+
+```{r plot-1}
+plot(x = cancer_data$lang.isolation, y = cancer_data$female.lung,
+     xlab = "Language isolation", ylab = "Lung cancer in females")
+```
+
+Hmmm...it is tough to tell from this plot alone if there is any predictive relationship between language isolation and the incidence of female lung cancer. Regardless of how this plot actually looks, we will want to run a statistical test to see if the relationship is statistically significant.
+
+### Generating hypotheses
+
+Before we do that though, let us again take a look at the demographic data we have. We are going to take a moment to generate a hypothesis for one of the other demographic variables. So, for one of the remaining variables (`r paste0(data_dictionary$name[4:7], collapse = ", ")`), consider how it might affect the incidence of lung cancer. If we consider our earlier investigation, the hypothesis we have is:
+
+_The rate of lung cancer in females will increase as the amount of language isolation increases._
+
+#### Exercise
+
+Considering how the remaining demographic variables relate to health care disparities, take a moment to write out a hypothesis.
+
+Now that you have your hypothesis, share it with your neighbor.
+
+### Testing hypotheses
+
+Let us now return to our original hypothesis, where we posit that language isolation can have an affect on lung cancer incidence. To test this hypothesis, we will use linear regression, which tests the relationship between two continuous-values variables. For the R code, we use the function `lm` to run the analysis and store the output in a variable called `lang_female_lm`.
+
+_Aside_: When naming varibles, we want to make sure the names are acually useful, instead of things like `x` and `var`, which do not say much about what we are storing in them.
+
+```{r test-lang-female}
+lang_female_lm <- lm(cancer_data$female.lung ~ cancer_data$lang.isolation)
+```
+
+We can then look at the output of the linear regression that was stored in `lang_female_lm` by typing the name of the variable alone and running that line:
+
+```{r show-lang-female}
+lang_female_lm
+```
+
+The output shows the predicted relationship between our two variables, in terms of intercept and slope, but it does not show us whether or not this is a significant relationship. To retrieve that information, we need to use the `summary` function on the results of our linear regression:
+
+```{r sig-lang-female}
+summary(lang_female_lm)
+```
 
 
-## Exercise
-+ Get in groups; take five minutes to come up with a hypothesis you can test with these data
 
 ***
 
