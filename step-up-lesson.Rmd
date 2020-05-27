@@ -10,25 +10,15 @@ output:
     fig_height: 4
 ---
 
+```{r setup, echo = FALSE}
+suppressPackageStartupMessages(library(knitr))
+```
+
 A two-hour workshop for participants in STEP-UP summer program on cancer prevention and control. There are 16 students, mostly upper-division undergraduates.
 
 ## Tasks:
 
-+ **Add tinyurl for data dictionary**
-+ **Add script header right before reading in cancer data**
-
-### General flow to lesson:
-
-+ At the beginning, look at the data (everyone opens on their own machine), do the tidy data explanation.
-+ Add information about a data dictionary here, since the column names aren’t great (need to go to the original source to see what units are for these variables). Give them time to look over the data dictionary
-+ Present one hypothesis, maybe see how language isolation predicts lung cancer incidence.
-+ How do we go about addressing this?
-    + Data visualization (an exercise for them in breakout rooms)
-        + Do this visualization in the code
-    + Statistical analyses
-        + Discuss but don’t do
-+ Ask them to generate hypotheses, picking one of the demographic variables to predict incidence; include term “disparity” in discussions.
-+ Do the stats on language isolation and lung cancer
++ **Add comments in code**
 + Do _another_ regression example, using earlier code.
 + Assign groups to test another hypothesis in breakout rooms
 + Show ice cream & sharks graph
@@ -40,15 +30,6 @@ A two-hour workshop for participants in STEP-UP summer program on cancer prevent
 3. Develop hypotheses to explain quantitative data patterns
 4. Write code to visualize data and test hypotheses
 5. Explain the difference between correlation & causation
-
-<!--
-1. Examine data to ensure quality
-2. Develop hypotheses to explain trends
-3. Visualize comparisons between two groups
-4. Visualize relationships between two variables
-5. Test relationships between variables
-6. Understand the difference between correlation and causation
--->
 
 ## [DESCRIPTION OR MOTIVATION; 2-4 sentences that would be used for an announcement]
 
@@ -91,9 +72,30 @@ data_dictionary <- read.csv(file = "data/data-dictionary.csv")
 knitr::kable(x = data_dictionary)
 ```
 
-Now, back in R, we can start working with the data. We need to load the data into R so we can do our analyses.
+Now, back in R, we can start working with the data. At this point, we want to make sure we keep track of all the work we do. We can do this by placing all of our R commands in an R script. This is just a fancy way of saying we will type R commands in a text file and save that file for later use. You can create a new script from the file menu (File > New File > R Script). We need to do two more things before we start typing code. The first is to add some information at the top of the script that is for human eyes only. That is, we need to make notes so anyone looking at this file knows what it is supposed to do. So at the very top of your script, starting each line with a pound sign ("#"), add:
+
+1. A short description of what the script does; no longer than one line
+2. Your name (not _my_ name)
+3. Your e-mail address (again, not _my_ e-mail address)
+4. Today's date in [ISO format](https://xkcd.com/1179/), YYYY-MM-DD.
+
+```{r script-header}
+# Analyze cancer incidence data
+# Jeff Oliver
+# jcoliver@arizona.edu
+# 2020-05-29
+```
+
+Second, we need to save our file. Let us save the file under the name "cancer-tests.R".
+
+Now we can load the data into R so we can do our analyses.
 
 ```{r data-loading}
+# Analyze cancer incidence data
+# Jeff Oliver
+# jcoliver@arizona.edu
+# 2020-05-29
+
 cancer_data <- read.csv(file = "data/cancer-data.csv")
 ```
 
@@ -127,7 +129,7 @@ plot(x = cancer_data$lang.isolation, y = cancer_data$female.lung)
 
 Let us take a moment to make our axis labels a little prettier by re-running the plot code with the names we want to use for the x- and y-axes.
 
-```{r plot-1}
+```{r plot-2}
 plot(x = cancer_data$lang.isolation, y = cancer_data$female.lung,
      xlab = "Language isolation", ylab = "Lung cancer in females")
 ```
@@ -168,115 +170,103 @@ The output shows the predicted relationship between our two variables, in terms 
 summary(lang_female_lm)
 ```
 
+The important part to look at (for our purposes) is the `Coefficients:` section. This shows us the estimated values for the model. In particular, we can see two things about the relationship between language isolation and lung cancer incidence: first, the relationship is _negative_, meaning that lung cancer incidence in females actually _decreases_ as language isolation increases. Second, we see this is a statistically significant relationship (because the value of `Pr(>|t|)` is less than 0.05).
 
+We can now use this model to add a line to the plot showing this relationship. We can copy and paste our plotting code from before and add the `abline` function to add the line:
 
-***
+```{r plot-3}
+plot(x = cancer_data$lang.isolation, y = cancer_data$female.lung,
+     xlab = "Language isolation", ylab = "Lung cancer in females")
+abline(lang_female_lm)
+```
 
-## Comparing groups
-### New script (reproducibility)
+The plot now does a pretty good job of showing the relationship between the incidence of lung cancer in females and the degree of language isolation.
 
-```{r t-test-script}
-# Compare cancer incidence between sexes
+### Test _your_ hypothesis
+
+Now it is time to test the hypothesis you came up earlier. To do so, you will want to write code that:
+
+1. Runs a statistical test on the data
+2. Displays the result of the statistical test
+3. Plot the data
+4. Add the line from the statistical test to the plot
+
+Which kind of sounds like a lot, but we already did all of this. If we look at our script, we should have something like:
+
+```{r script-review, eval = FALSE}
+# Analyze cancer incidence data
 # Jeff Oliver
-# jcoliver@email.arizona.edu
-# 2019-06-05
-```
+# jcoliver@arizona.edu
+# 2020-05-29
 
-### Read in data & visualize male v. female incidence
-```{r compare-male-female}
+# Read data into memory
 cancer_data <- read.csv(file = "data/cancer-data.csv")
-boxplot(cancer_data$female.lung, cancer_data$male.lung)
+
+# Test relationship between female lung cancer and language isolation
+lang_female_lm <- lm(cancer_data$female.lung ~ cancer_data$lang.isolation)
+
+# Display results of statistical test
+summary(lang_female_lm)
+
+plot(x = cancer_data$lang.isolation, y = cancer_data$female.lung,
+     xlab = "Language isolation", ylab = "Lung cancer in females")
+abline(lang_female_lm)
 ```
 
-But the x-axis doesn't tell us what "1" and "2" correspond to.
+We do not need to re-write all the code from scratch, we can copy and paste what we need and update it as necessary (the not-so-well-kept secret of programming is that there is _a lot_ of copy-paste that happens).
 
-```{r boxplot-axis-names}
-boxplot(list(female = cancer_data$female.lung, male = cancer_data$male.lung))
-```
+At this point, try copying all the code, pasting into a new script (with an updated header!), and updating it to test your hypothesis.
 
-### Run t-test
-```{r sexes-t-test}
-t.test(x = cancer_data$female.lung, y = cancer_data$male.lung)
-```
+Run your code and share your results with your neighbor. 
 
-***
+To see this process in action, consider a similar hypothesis to the one above, but this time focus on the incidence of lung cancer in males.
 
-## Exercise
-+ Get in groups; take five minutes to draw how you might show relationship between variables; ideally comes from one of the hypotheses students generated
+Hypothesis: _The rate of lung cancer in males will increase as the amount of language isolation increases._
 
-***
-
-## Testing relationships
-### New script
-```{r regression-script}
-# Compare cancer incidence between sexes
+```{r update-male, eval = FALSE}
+# Analyze male lung cancer incidence data
 # Jeff Oliver
-# jcoliver@email.arizona.edu
-# 2019-06-05
-```
+# jcoliver@arizona.edu
+# 2020-05-29
 
-### Plot data & describe hypothesis
-```{r plot-two-variables}
+# Read data into memory
 cancer_data <- read.csv(file = "data/cancer-data.csv")
-plot(x = cancer_data$income, y = cancer_data$male.lung)
+
+# Test relationship between male lung cancer and language isolation
+lang_male_lm <- lm(cancer_data$male.lung ~ cancer_data$lang.isolation)
+
+# Display results of statistical test
+summary(lang_male_lm)
+
+plot(x = cancer_data$lang.isolation, y = cancer_data$male.lung,
+     xlab = "Language isolation", ylab = "Lung cancer in males")
+abline(lang_male_lm)
 ```
 
-Clean up the axis labels
-```{r clean-plot}
-plot(x = cancer_data$income, 
-     y = cancer_data$male.lung,
-     xlab = "Income (US $)",
-     ylab = "Lung cancer incidence (males)")
+We can also change which predictor we are looking at. In the next example, instead of looking at how language isolation is related to cancer incidence, we test for a relationship between household income and cancer rates.
+
+Hypothesis: _The rate of lung cancer in females will decrease as average household income increases._
+
+```{r income-test, eval = FALSE}
+# Analyze lung cancer incidence data and income
+# Jeff Oliver
+# jcoliver@arizona.edu
+# 2020-05-29
+
+# Read data into memory
+cancer_data <- read.csv(file = "data/cancer-data.csv")
+
+# Test relationship between female lung cancer and language isolation
+income_female_lm <- lm(cancer_data$female.lung ~ cancer_data$income)
+
+# Display results of statistical test
+summary(income_female_lm)
+
+plot(x = cancer_data$income, y = cancer_data$female.lung,
+     xlab = "Household income", ylab = "Lung cancer in females")
+abline(income_female_lm)
 ```
 
-### Test relationship
-```{r linear-regression}
-income.lm <- lm(cancer_data$male.lung ~ cancer_data$income)
-summary(income.lm)
-```
-
-### Update plot
-```{r update-regression-plot}
-plot(x = cancer_data$income, 
-     y = cancer_data$male.lung,
-     xlab = "Income (US $)",
-     ylab = "Lung cancer incidence (males)")
-abline(income.lm)
-```
-
-### Correlation vs. Causation
-Discuss:
-
-```{r sharks, echo = FALSE}
-ice.cream <- 1:12 + rnorm(n = 12, mean = 2)
-shark.attacks <- round(5 * (1:12 + rnorm(n = 12, mean = 2)), digits = 0)
-plot(x = ice.cream,
-     y = shark.attacks,
-     xlab = "Ice Cream Sales ($1,000)",
-     ylab = "Shark Attacks")
-abline(lm(shark.attacks ~ ice.cream))
-```
-
-### Some additional plotting options
-```{r plot-both-sexes}
-plot(x = cancer_data$income, 
-     y = cancer_data$male.lung,
-     xlab = "Income (US $)",
-     ylab = "Lung cancer incidence",
-     pch = 19,
-     col = "orange")
-points(x = cancer_data$income,
-       y = cancer_data$female.lung,
-       pch = 19,
-       col = "forestgreen")
-abline(income.lm, col = "orange", lty = 2)
-abline(lm(female.lung ~ income, data = cancer_data), col = "forestgreen", lty = 2)
-legend("topright",
-       legend = c("Females", "Males"),
-       col = c("forestgreen", "orange"),
-       pch = 19,
-       lty = 2)
-```
 
 ***
 
