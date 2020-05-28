@@ -48,7 +48,8 @@ dir.create("output")
     + These data are lung cancer data incidence rates for each state, along with some demographic data
 
 ```{r data-retrieve, eval = FALSE}
-download.file(url = "tinyurl.com/cancer-data-csv", destfile = "data/cancer-data.csv")
+download.file(url = "tinyurl.com/cancer-data-csv", 
+              destfile = "data/cancer-data.csv")
 ```
 
 Open the file in a spreadsheet program like Microsoft Excel, LibreOffice Sheets, or Google Sheets.
@@ -62,7 +63,8 @@ Notice that we have `r ncol(cancer_data)` columns of data. These are in what is 
 Some of these column names are easy to interpret, others are not as useful. The names are very short and it makes them easy to do analyses with them, but they are not necessarily human friendly. So we need to also download the data dictionary that defines what each of those columns means.
 
 ```{r data-dictionary-retrieve, eval = FALSE}
-download.file(url = "tinyurl.com/data-dictionary-csv", destfile = "data/data-dictionary.csv")
+download.file(url = "tinyurl.com/data-dictionary-csv", 
+              destfile = "data/data-dictionary.csv")
 ```
 
 Open this file in your spreadsheet program and see what the columns represent.
