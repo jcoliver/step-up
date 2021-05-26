@@ -31,7 +31,9 @@ A two-hour workshop for participants in STEP-UP summer program on cancer prevent
 4. Write code to visualize data and test hypotheses
 5. Explain the difference between correlation & causation
 
+<!--
 ## [DESCRIPTION OR MOTIVATION; 2-4 sentences that would be used for an announcement]
+-->
 
 ***
 
@@ -268,7 +270,6 @@ plot(x = cancer_data$income, y = cancer_data$female.lung,
      xlab = "Household income", ylab = "Lung cancer in females")
 abline(income_female_lm)
 ```
-
 
 ***
 

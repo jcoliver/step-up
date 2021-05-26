@@ -4,4 +4,4 @@ This repository holds a single lesson introducing some basic statistics (T-test 
 
 See [https://jcoliver.github.io/step-up/step-up-lesson.html](https://jcoliver.github.io/step-up/step-up-lesson.html). 
 
-All data used in the lesson are availible in the `data` directory and are sourced from [https://statecancerprofiles.cancer.gov/](https://statecancerprofiles.cancer.gov/)).
+All data used in the lesson are available in the `data` directory and are sourced from [https://statecancerprofiles.cancer.gov/](https://statecancerprofiles.cancer.gov/).
