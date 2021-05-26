@@ -1,2 +1,1 @@
-# For using an R kernel on MyBinder
 r-2021-05-18
