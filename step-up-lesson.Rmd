@@ -14,26 +14,25 @@ output:
 suppressPackageStartupMessages(library(knitr))
 ```
 
-A two-hour workshop for participants in STEP-UP summer program on cancer prevention and control. There are 16 students, mostly upper-division undergraduates.
+A two-hour workshop for participants in STEP-UP summer program on cancer 
+prevention and control. Designed for hands-on implementation with a class size 
+of 15-20 students, mostly upper-division undergraduates.
 
+<!--
 ## Tasks:
 
-+ **Add comments in code**
-+ Do _another_ regression example, using earlier code.
 + Assign groups to test another hypothesis in breakout rooms
 + Show ice cream & sharks graph
+-->
 
 #### Learning objectives
 
-1. Describe “tidy data” principles of one observation per row, one data type per column
+1. Describe “tidy data” principles of one observation per row, one data type 
+per column
 2. Explain how to show relationships in data with data visualization
 3. Develop hypotheses to explain quantitative data patterns
 4. Write code to visualize data and test hypotheses
 5. Explain the difference between correlation & causation
-
-<!--
-## [DESCRIPTION OR MOTIVATION; 2-4 sentences that would be used for an announcement]
--->
 
 ***
 
@@ -42,29 +41,41 @@ A two-hour workshop for participants in STEP-UP summer program on cancer prevent
 + Start RStudio
 + Create a new project via File > New Project... > New Directory > New Project
 + Make `data` and `output` directories in the project
+
 ```{r create-directories, eval = FALSE}
+# Create two folders
 dir.create("data")
 dir.create("output")
 ```
+
 + Download data (come from [https://statecancerprofiles.cancer.gov/](https://statecancerprofiles.cancer.gov/))
     + These data are lung cancer data incidence rates for each state, along with some demographic data
 
 ```{r data-retrieve, eval = FALSE}
+# Download the data file from the web
 download.file(url = "tinyurl.com/cancer-data-csv", 
               destfile = "data/cancer-data.csv")
 ```
 
-Open the file in a spreadsheet program like Microsoft Excel, LibreOffice Sheets, or Google Sheets.
+Open the file in a spreadsheet program like Microsoft Excel, LibreOffice 
+Sheets, or Google Sheets and look at the data.
 
 ```{r load-data, echo = FALSE}
+# Read the data into R
 cancer_data <- read.csv(file = "data/cancer-data.csv")
 ```
 
-Notice that we have `r ncol(cancer_data)` columns of data. These are in what is called 'tidy' format. That is because each row has the data for a single state and each column has only one kind of data in it.
+Notice that we have `r ncol(cancer_data)` columns of data. These are in what is 
+called 'tidy' format. That is because each row has the data for a single state 
+and each column has only one kind of data in it.
 
-Some of these column names are easy to interpret, others are not as useful. The names are very short and it makes them easy to do analyses with them, but they are not necessarily human friendly. So we need to also download the data dictionary that defines what each of those columns means.
+Some of these column names are easy to interpret, others are not as useful. The 
+names are very short and it makes them easy to do analyses with them, but they 
+are not necessarily human friendly. So we need to also download the data 
+dictionary that defines what each of those columns means.
 
 ```{r data-dictionary-retrieve, eval = FALSE}
+# Download data dictionary
 download.file(url = "tinyurl.com/data-dictionary-csv", 
               destfile = "data/data-dictionary.csv")
 ```
@@ -76,7 +87,15 @@ data_dictionary <- read.csv(file = "data/data-dictionary.csv")
 knitr::kable(x = data_dictionary)
 ```
 
-Now, back in R, we can start working with the data. At this point, we want to make sure we keep track of all the work we do. We can do this by placing all of our R commands in an R script. This is just a fancy way of saying we will type R commands in a text file and save that file for later use. You can create a new script from the file menu (File > New File > R Script). We need to do two more things before we start typing code. The first is to add some information at the top of the script that is for human eyes only. That is, we need to make notes so anyone looking at this file knows what it is supposed to do. So at the very top of your script, starting each line with a pound sign ("#"), add:
+Now, back in R, we can start working with the data. At this point, we want to 
+make sure we keep track of all the work we do. We can do this by placing all of 
+our R commands in an R script. This is just a fancy way of saying we will type 
+R commands in a text file and save that file for later use. You can create a 
+new script from the file menu (File > New File > R Script). We need to do two 
+more things before we start typing code. The first is to add some information 
+at the top of the script that is for human eyes only. That is, we need to make 
+notes so anyone looking at this file knows what it is supposed to do. So at the 
+very top of your script, starting each line with a pound sign ("#"), add:
 
 1. A short description of what the script does; no longer than one line
 2. Your name (not _my_ name)
@@ -90,7 +109,8 @@ Now, back in R, we can start working with the data. At this point, we want to ma
 # 2020-05-29
 ```
 
-Second, we need to save our file. Let us save the file under the name "cancer-tests.R".
+Second, we need to save our file. Let us save the file under the name 
+"cancer-tests.R".
 
 Now we can load the data into R so we can do our analyses.
 
@@ -100,16 +120,20 @@ Now we can load the data into R so we can do our analyses.
 # jcoliver@arizona.edu
 # 2020-05-29
 
+# Read data into R
 cancer_data <- read.csv(file = "data/cancer-data.csv")
 ```
 
-We can also take a quick glance at some of these data in r with the `head` and `summary` commands.
+We can also take a quick glance at some of these data in r with the `head` and 
+`summary` commands.
 
 ```{r data-head}
+# Show the first six rows of data
 head(cancer_data)
 ```
 
 ```{r data-summary}
+# Look at the summary statistics for each column
 summary(cancer_data)
 ```
 
@@ -117,85 +141,132 @@ summary(cancer_data)
 
 ## So what?
 
-But what can we actually do with these data? Well, a lot, really. It really depends on the question you are interested in asking. So one thing we might be interested in is how language isolation affects the rates of lung cancer. That is, do states with a higher percentage of households that have difficulty with the English language have higher rates of lung cancer? This might happen because public health efforts may only be offered in English, and thus not reach all groups in need.
+But what can we actually do with these data? Well, a lot, really. It really 
+depends on the question you are interested in asking. So one thing we might be 
+interested in is how language isolation affects the rates of lung cancer. That 
+is, do states with a higher percentage of households that have difficulty with 
+the English language have higher rates of lung cancer? This might happen 
+because public health efforts may only be offered in English, and thus not 
+reach all groups in need.
 
 ### Visualizing data
 
-What would the data look like if this was the case? That is, if we had a plot of language isolation and rates of lung cancer, what would it look like if increased language isolation leads to increased rates of lung cancer? Take a few minutes to draw a plot by hand to show what this looks like.
+What would the data look like if this was the case? That is, if we had a plot 
+of language isolation and rates of lung cancer, what would it look like if 
+increased language isolation leads to increased rates of lung cancer? Take a 
+few minutes to draw a plot by hand to show what this looks like.
 
 We can wait.
 
-So let us now look at the actual data. For this first plot, we will look at the incidence of lung cancer in females alone. We can use the `plot` command to show the data, instructing R to use the `lang.isolation` column for the x-axis and the `female.lung` column for the y-axis.
+So let us now look at the actual data. For this first plot, we will look at the 
+incidence of lung cancer in females alone. We can use the `plot` command to 
+show the data, instructing R to use the `lang.isolation` column for the x-axis 
+and the `female.lung` column for the y-axis.
 
 ```{r plot-1}
+# Plot female lung cancer incidence vs language isolation
 plot(x = cancer_data$lang.isolation, y = cancer_data$female.lung)
 ```
 
-Let us take a moment to make our axis labels a little prettier by re-running the plot code with the names we want to use for the x- and y-axes.
+Let us take a moment to make our axis labels a little prettier by re-running 
+the plot code with the names we want to use for the x- and y-axes.
 
 ```{r plot-2}
+# Plot again with better axis labels
 plot(x = cancer_data$lang.isolation, y = cancer_data$female.lung,
      xlab = "Language isolation", ylab = "Lung cancer in females")
 ```
 
-Hmmm...it is tough to tell from this plot alone if there is any predictive relationship between language isolation and the incidence of female lung cancer. Regardless of how this plot actually looks, we will want to run a statistical test to see if the relationship is statistically significant.
+Hmmm...it is tough to tell from this plot alone if there is any predictive 
+relationship between language isolation and the incidence of female lung 
+cancer. Regardless of how this plot actually looks, we will want to run a 
+statistical test to see if the relationship is statistically significant.
 
 ### Generating hypotheses
 
-Before we do that though, let us again take a look at the demographic data we have. We are going to take a moment to generate a hypothesis for one of the other demographic variables. So, for one of the remaining variables (`r paste0(data_dictionary$name[4:7], collapse = ", ")`), consider how it might affect the incidence of lung cancer. If we consider our earlier investigation, the hypothesis we have is:
+Before we do that though, let us again take a look at the demographic data we 
+have. We are going to take a moment to generate a hypothesis for one of the 
+other demographic variables. So, for one of the remaining variables (`r paste0(data_dictionary$name[4:7], collapse = ", ")`), 
+consider how it might affect the incidence of lung cancer. If we consider our 
+earlier investigation, the hypothesis we have is:
 
 _The rate of lung cancer in females will increase as the amount of language isolation increases._
 
 #### Exercise
 
-Considering how the remaining demographic variables relate to health care disparities, take a moment to write out a hypothesis.
+Considering how the remaining demographic variables relate to health care 
+disparities, take a moment to write out a hypothesis.
 
 Now that you have your hypothesis, share it with your neighbor.
 
 ### Testing hypotheses
 
-Let us now return to our original hypothesis, where we posit that language isolation can have an affect on lung cancer incidence. To test this hypothesis, we will use linear regression, which tests the relationship between two continuous-values variables. For the R code, we use the function `lm` to run the analysis and store the output in a variable called `lang_female_lm`.
+Let us now return to our original hypothesis, where we posit that language 
+isolation can have an affect on lung cancer incidence. To test this hypothesis, 
+we will use linear regression, which tests the relationship between two 
+continuous-values variables. For the R code, we use the function `lm` to run 
+the analysis and store the output in a variable called `lang_female_lm`.
 
-_Aside_: When naming varibles, we want to make sure the names are acually useful, instead of things like `x` and `var`, which do not say much about what we are storing in them.
+_Aside_: When naming variables, we want to make sure the names are actually 
+useful, instead of things like `x` and `var`, which do not say much about what 
+we are storing in them.
 
 ```{r test-lang-female}
+# Test for an effect of language isolation on female lung cancer incidence
 lang_female_lm <- lm(cancer_data$female.lung ~ cancer_data$lang.isolation)
 ```
 
-We can then look at the output of the linear regression that was stored in `lang_female_lm` by typing the name of the variable alone and running that line:
+We can then look at the output of the linear regression that was stored in
+`lang_female_lm` by typing the name of the variable alone and running that line:
 
 ```{r show-lang-female}
 lang_female_lm
 ```
 
-The output shows the predicted relationship between our two variables, in terms of intercept and slope, but it does not show us whether or not this is a significant relationship. To retrieve that information, we need to use the `summary` function on the results of our linear regression:
+The output shows the predicted relationship between our two variables, in terms 
+of intercept and slope, but it does not show us whether or not this is a 
+significant relationship. To retrieve that information, we need to use the 
+`summary` function on the results of our linear regression:
 
 ```{r sig-lang-female}
+# View results of linear regression model
 summary(lang_female_lm)
 ```
 
-The important part to look at (for our purposes) is the `Coefficients:` section. This shows us the estimated values for the model. In particular, we can see two things about the relationship between language isolation and lung cancer incidence: first, the relationship is _negative_, meaning that lung cancer incidence in females actually _decreases_ as language isolation increases. Second, we see this is a statistically significant relationship (because the value of `Pr(>|t|)` is less than 0.05).
+The important part to look at (for our purposes) is the `Coefficients:` 
+section. This shows us the estimated values for the model. In particular, we 
+can see two things about the relationship between language isolation and lung 
+cancer incidence: first, the relationship is _negative_, meaning that lung 
+cancer incidence in females actually _decreases_ as language isolation 
+increases. Second, we see this is a statistically significant relationship 
+(because the value of `Pr(>|t|)` is less than 0.05).
 
-We can now use this model to add a line to the plot showing this relationship. We can copy and paste our plotting code from before and add the `abline` function to add the line:
+We can now use this model to add a line to the plot showing this relationship. 
+We can copy and paste our plotting code from before and add the `abline` 
+function to add the line:
 
 ```{r plot-3}
+# Add the trendline to the plot
 plot(x = cancer_data$lang.isolation, y = cancer_data$female.lung,
      xlab = "Language isolation", ylab = "Lung cancer in females")
 abline(lang_female_lm)
 ```
 
-The plot now does a pretty good job of showing the relationship between the incidence of lung cancer in females and the degree of language isolation.
+The plot now does a pretty good job of showing the relationship between the 
+incidence of lung cancer in females and the degree of language isolation.
 
 ### Test _your_ hypothesis
 
-Now it is time to test the hypothesis you came up earlier. To do so, you will want to write code that:
+Now it is time to test the hypothesis you came up earlier. To do so, you will 
+want to write code that:
 
 1. Runs a statistical test on the data
 2. Displays the result of the statistical test
 3. Plot the data
 4. Add the line from the statistical test to the plot
 
-Which kind of sounds like a lot, but we already did all of this. If we look at our script, we should have something like:
+Which kind of sounds like a lot, but we already did all of this. If we look at 
+our script, we should have something like:
 
 ```{r script-review, eval = FALSE}
 # Analyze cancer incidence data
@@ -212,18 +283,23 @@ lang_female_lm <- lm(cancer_data$female.lung ~ cancer_data$lang.isolation)
 # Display results of statistical test
 summary(lang_female_lm)
 
+# Plot the data and add the results of the statistical test
 plot(x = cancer_data$lang.isolation, y = cancer_data$female.lung,
      xlab = "Language isolation", ylab = "Lung cancer in females")
 abline(lang_female_lm)
 ```
 
-We do not need to re-write all the code from scratch, we can copy and paste what we need and update it as necessary (the not-so-well-kept secret of programming is that there is _a lot_ of copy-paste that happens).
+We do not need to re-write all the code from scratch, we can copy and paste 
+what we need and update it as necessary (the not-so-well-kept secret of 
+programming is that there is _a lot_ of copy-paste that happens).
 
-At this point, try copying all the code, pasting into a new script (with an updated header!), and updating it to test your hypothesis.
+At this point, try copying all the code, pasting into a new script (with an 
+updated header!), and updating it to test your hypothesis.
 
 Run your code and share your results with your neighbor. 
 
-To see this process in action, consider a similar hypothesis to the one above, but this time focus on the incidence of lung cancer in males.
+To see this process in action, consider a similar hypothesis to the one above, 
+but this time focus on the incidence of lung cancer in males.
 
 Hypothesis: _The rate of lung cancer in males will increase as the amount of language isolation increases._
 
@@ -242,12 +318,15 @@ lang_male_lm <- lm(cancer_data$male.lung ~ cancer_data$lang.isolation)
 # Display results of statistical test
 summary(lang_male_lm)
 
+# Plot the data and add the results of the statistical test
 plot(x = cancer_data$lang.isolation, y = cancer_data$male.lung,
      xlab = "Language isolation", ylab = "Lung cancer in males")
 abline(lang_male_lm)
 ```
 
-We can also change which predictor we are looking at. In the next example, instead of looking at how language isolation is related to cancer incidence, we test for a relationship between household income and cancer rates.
+We can also change which predictor we are looking at. In the next example, 
+instead of looking at how language isolation is related to cancer incidence, we 
+test for a relationship between household income and cancer rates.
 
 Hypothesis: _The rate of lung cancer in females will decrease as average household income increases._
 
@@ -260,12 +339,13 @@ Hypothesis: _The rate of lung cancer in females will decrease as average househo
 # Read data into memory
 cancer_data <- read.csv(file = "data/cancer-data.csv")
 
-# Test relationship between female lung cancer and language isolation
+# Test relationship between female lung cancer and income
 income_female_lm <- lm(cancer_data$female.lung ~ cancer_data$income)
 
 # Display results of statistical test
 summary(income_female_lm)
 
+# Plot the data and add the results of the statistical test
 plot(x = cancer_data$income, y = cancer_data$female.lung,
      xlab = "Household income", ylab = "Lung cancer in females")
 abline(income_female_lm)
@@ -275,10 +355,10 @@ abline(income_female_lm)
 
 ## Additional resources
 
-+ [resource one](url-one)
-+ [resource two](url-two)
++ An [in-depth explanation](https://stats.idre.ucla.edu/wp-content/uploads/2021/05/R_reg_part1.html) of linear regression in R
++ A linear regression example that uses the [ggplot2 package](https://www.statology.org/ggplot2-linear-regression/) for nicer-looking plots
 + A [PDF version](https://jcoliver.github.io/learn-r/step-up-lesson.pdf) of this lesson
 
 ***
 
-Questions?  e-mail me at <a href="mailto:jcoliver@email.arizona.edu">jcoliver@email.arizona.edu</a>.
+Questions?  e-mail me at <a href="mailto:jcoliver@arizona.edu">jcoliver@arizona.edu</a>.
